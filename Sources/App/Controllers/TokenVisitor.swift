@@ -14,6 +14,7 @@ final class TokenVisitor: SyntaxRewriter {
 
     override func visitPre(_ node: Syntax) {
         var syntax = "\(node.syntaxNodeType)"
+        print("Visit pre is called for \(syntax)")
         if syntax.hasSuffix("Syntax") {
             syntax = String(syntax.dropLast(6))
         }
@@ -34,6 +35,7 @@ final class TokenVisitor: SyntaxRewriter {
     }
 
     override func visit(_ token: TokenSyntax) -> Syntax {
+        print("Visit is called for token \(token.text)")
         current.text = token.text
         current.token = Node.Token(kind: "\(token.tokenKind)", leadingTrivia: "", trailingTrivia: "")
 
