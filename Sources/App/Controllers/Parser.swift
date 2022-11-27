@@ -15,7 +15,7 @@ struct Parser {
         let tree = visitor.tree
         let encoder = JSONEncoder()
         let json = String(data: try encoder.encode(tree), encoding: .utf8) ?? "{}"
-
+        let sourceCode = visitor.codeList.joined()
         let statistics = visitor.statistics.sorted
 
         return SyntaxResponse(syntaxHTML: html, syntaxJSON: json, statistics: statistics, swiftVersion: swiftVersion)

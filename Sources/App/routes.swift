@@ -11,6 +11,7 @@ func routes(_ app: Application) throws {
         return req.view.render("index", [
             "title": "Swift AST Explorer",
             "defaultSampleCode": defaultSampleCode,
+            "defaultSampleCode2": defaultSampleCode,
             "swiftVersion": swiftVersion,
         ])
     }
@@ -49,6 +50,7 @@ func routes(_ app: Application) throws {
                         "title": "Swift AST Explorer",
                         "defaultSampleCode": content,
                         "swiftVersion": swiftVersion,
+                        "defaultSampleCode2": content,
                     ]
                 )
                 .cascade(to: promise)
@@ -83,27 +85,8 @@ private struct RequestParameter: Decodable {
 }
 
 private let defaultSampleCode = #"""
-import Foundation
-
-struct BlackjackCard {
-  // nested Suit enumeration
-  enum Suit: Character {
-    case spades = "♠"
-    case hearts = "♡"
-    case diamonds = "♢"
-    case clubs = "♣"
-  }
-
-  // BlackjackCard properties and methods
-  let rank: Rank, suit: Suit
-  var description: String {
-    var output = "suit is \(suit.rawValue),"
-    output += " value is \(rank.values.first)"
-    if let second = rank.values.second {
-      output += " or \(second)"
-    }
-    return output
-  }
+final class AppOnboardingViewModelMapper: AppOnboardingViewModelMapping {
+    private let localize: (String) -> String
+    init(localize: @escaping (String) -> String = { Localization.localize($0) })
 }
-
 """#

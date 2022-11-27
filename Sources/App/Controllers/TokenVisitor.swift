@@ -3,9 +3,16 @@ import SwiftSyntax
 
 final class TokenVisitor: SyntaxRewriter {
     var list = [String]()
+    var codeList = [String]()
 
     var tree = [Node]()
     var current: Node!
+
+
+    var isDetectingLocalizaionDecl: Bool = false
+    var isLocalInsideFunction: Bool = false
+    var isLocalizaionFunctionCall: Bool = false
+    var isDetectingLocalizaionString: Bool = false
 
     var statistics = SyntaxStatistics()
 
@@ -14,9 +21,11 @@ final class TokenVisitor: SyntaxRewriter {
 
     override func visitPre(_ node: Syntax) {
         var syntax = "\(node.syntaxNodeType)"
-        print("Visit pre is called for \(syntax)")
         if syntax.hasSuffix("Syntax") {
             syntax = String(syntax.dropLast(6))
+        }
+        if isDetectingLocalizaionDecl {
+            print("❤️ -> \(syntax)", current.text)
         }
         list.append("<span class='\(syntax)' data-tooltip-title='Syntax' data-tooltip-content='\(syntax)'>")
 
@@ -35,8 +44,42 @@ final class TokenVisitor: SyntaxRewriter {
     }
 
     override func visit(_ token: TokenSyntax) -> Syntax {
-        print("Visit is called for token \(token.text)")
+//        print("Visit is called for token \(token.text)")
         current.text = token.text
+        
+//        let result = "\(token.text)"
+//            .split(separator: "_")  // split to components
+//            .map { String($0) }   // convert subsequences to String
+//            .enumerated()  // get indices
+//            .map { $0.offset > 0 ? $0.element.capitalized : $0.element.lowercased() } // added lowercasing
+//            .joined() // join to one string
+//
+//
+//        list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters("LocalizationKey.\(result)"))</span>")
+//
+        
+        if token.text.split(separator: "_").count >= 3 {
+            print("Unhandled Text")
+            isDetectingLocalizaionString = true
+        }
+
+
+        if current.text == "localize" {
+            print("Current is detected \(current.text)")
+            if let declarationParent = current.parent?.parent?.parent?.parent?.text, declarationParent == "VariableDecl" {
+                print("We have a localizeVariable")
+                isDetectingLocalizaionDecl = true
+            } else if let functionParent = current.parent?.text, functionParent == "FunctionParameter"  {
+                isLocalInsideFunction = true
+            } else if let functionParent = current.parent?.text,
+                      functionParent == "MemberAccessExpr",
+                      (current.parent?.parent?.text ?? "") == "FunctionCallExpr" {
+                isLocalizaionFunctionCall = true
+            } else {
+                print("Unhandled Localizaions")
+            }
+        }
+        
         current.token = Node.Token(kind: "\(token.tokenKind)", leadingTrivia: "", trailingTrivia: "")
 
         current.range.startRow = row
@@ -45,18 +88,55 @@ final class TokenVisitor: SyntaxRewriter {
         token.leadingTrivia.forEach { (piece) in
             let trivia = processTriviaPiece(piece)
             list.append(trivia)
+            codeList.append(trivia)
             current.token?.leadingTrivia += replaceSymbols(text: trivia)
         }
+       
+        
+//        if "\(token.tokenKind)".contains("stringSegment") || "\(token.tokenKind)".contains("stringQuote") {
+//            if "\(token.tokenKind)".contains("stringSegment")  {
+//                if  token.text.split(separator: "_").count >= 3 {
+//                    processToken(token,isSpecial: true)
+//                } else {
+//                    processToken(token)
+//
+//                }
+//            } else {
+//
+//            }
+//
+//        } else {
+//
+//        }
         processToken(token)
+        
         token.trailingTrivia.forEach { (piece) in
             let trivia = processTriviaPiece(piece)
             list.append(trivia)
+            codeList.append(trivia)
             current.token?.trailingTrivia += replaceSymbols(text: trivia)
         }
 
         current.range.endRow = row
         current.range.endColumn = column
 
+        /*
+         if syntax.hasPrefix("StringSegment") {
+             let detectedString = node.description
+             
+             //TODO: Support . ? and maybe better way to know if's a key.
+             
+             if detectedString.split(separator: "_").count >= 3 {
+                 let replacingNodeType = node.parent?.parent?.syntaxNodeType
+                 if var replacingNode = node.parent?.parent {
+                     replacingNode = .init(FunctionDeclSyntax.init({ builder in
+                         
+                     }))
+                 }
+             }
+             
+         }
+         */
         return token._syntaxNode
     }
 
@@ -64,10 +144,11 @@ final class TokenVisitor: SyntaxRewriter {
         list.append("</span>")
         current.range.endRow = row
         current.range.endColumn = column
+        print("Current is \(current.text) and going to be \(current.parent?.text ?? "")")
         current = current.parent
     }
 
-    private func processToken(_ token: TokenSyntax) {
+    private func processToken(_ token: TokenSyntax, isSpecial: Bool = false) {
         var kind = "\(token.tokenKind)"
         if let index = kind.firstIndex(of: "(") {
             kind = String(kind.prefix(upTo: index))
@@ -76,7 +157,53 @@ final class TokenVisitor: SyntaxRewriter {
             kind = "keyword"
         }
 
-        list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters(token.text))</span>")
+      /*  if token.text.split(separator: "_").count >= 3 {
+            let result = "\(token.text)"
+                .split(separator: "_")  // split to components
+                .map { String($0) }   // convert subsequences to String
+                .enumerated()  // get indices
+                .map { $0.offset > 0 ? $0.element.capitalized : $0.element.lowercased() } // added lowercasing
+                .joined() // join to one string
+
+            
+            list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters("LocalizationKey.\(result)"))</span>")
+            
+            print("Unhandled Text")
+ 
+        } else { */
+        if isDetectingLocalizaionString {
+            if kind == "stringQuote" {
+                print("Not going to add String Quote")
+                isDetectingLocalizaionString = false
+            } else {
+                let result = "\(token.text)"
+                    .split(separator: "_")  // split to components
+                    .map { String($0) }   // convert subsequences to String
+                    .enumerated()  // get indices
+                    .map { $0.offset > 0 ? $0.element.capitalized : $0.element.lowercased() } // added lowercasing
+                    .joined() // join to one string
+
+                list.remove(at: list.count - 5)
+                list.remove(at: list.count - 4)
+                
+                list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters("LocalizationKey.\(result)"))</span>")
+            }
+        } else if isDetectingLocalizaionDecl, token.text == "String" {
+                list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters("LocalizationKey"))</span>")
+                
+                isDetectingLocalizaionDecl = false
+            } else if isLocalInsideFunction, token.text == "String" {
+                list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters("LocalizationKey"))</span>")
+                isLocalInsideFunction = false
+            } else if isLocalizaionFunctionCall, token.text == "localize" {
+                list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters("localizeKey"))</span>")
+
+                isLocalizaionFunctionCall = false
+            } else {
+                list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters(token.text))</span>")
+            }
+        
+        codeList.append(token.text)
         column += token.text.count
     }
 

@@ -58,7 +58,7 @@
               aria-label="Service List" aria-controls="service-list-offcanvas">
               <span class="fab fa-swift fa-2x text-primary d-inline-block align-middle"
                 style="min-width: 2rem; min-height: 2rem;"></span>
-              <span class="h4 text-dark d-inline-block align-middle m-0">Swift AST Explorer</span>
+              <span class="h4 text-dark d-inline-block align-middle m-0">Wallapop Localizaion Helper</span>
             </a>
           </div>
           <div class="col-md-auto">
@@ -253,7 +253,7 @@
               <div class="card-body">
                 <img src="/images/icon_swift-ast-explorer.com.svg" class="float-start me-2 rounded-3"
                   style="width: 54px; height: 54px" alt="...">
-                <h5 class="card-title">Swift AST Explorer</h5>
+                <h5 class="card-title">Wallapop Localizaions Helper</h5>
                 <h6 class="text-muted">AST visualizer for Swift source code</h6>
                 <p class="card-text">Visualize Swift AST and select nodes within the editor, a great way to learn about
                   the structure of
