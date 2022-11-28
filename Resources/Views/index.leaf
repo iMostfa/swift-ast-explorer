@@ -254,10 +254,8 @@
                 <img src="/images/icon_swift-ast-explorer.com.svg" class="float-start me-2 rounded-3"
                   style="width: 54px; height: 54px" alt="...">
                 <h5 class="card-title">Wallapop Localizaions Helper</h5>
-                <h6 class="text-muted">AST visualizer for Swift source code</h6>
-                <p class="card-text">Visualize Swift AST and select nodes within the editor, a great way to learn about
-                  the structure of
-                  Swift syntax trees.</p>
+                <h6 class="text-muted">Wallapop Localizaions using AST visualizer </h6>
+                <p class="card-text">Wallapop Localizaions using AST visualizer where you can select nodes within the editor, to make our lives easier and faster.</p>
               </div>
             </a>
           </div>
@@ -271,10 +269,9 @@
               <div class="card-body">
                 <img src="/images/icon_swift-format.com.svg" class="float-start me-2 rounded-3"
                   style="width: 54px; height: 54px" alt="...">
-                <h5 class="card-title text-dark">Swift Formatter</h5>
-                <h6 class="text-muted">Online Swift code formatter</h6>
-                <p class="card-text text-dark">Format a Swift code, making it readable and pretty, with the proper
-                  indentation.</p>
+                <h5 class="card-title text-dark"> </h5>
+                <h6 class="text-muted"> </h6>
+                <p class="card-text text-dark"> </p>
               </div>
             </a>
           </div>
