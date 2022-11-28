@@ -85,8 +85,95 @@ private struct RequestParameter: Decodable {
 }
 
 private let defaultSampleCode = #"""
+import CommonUI
+import Localization
+
+protocol AppOnboardingViewModelMapping {
+    func map(shouldRefreshTextPager: Bool, page: Int) -> AppOnboardingViewModel
+}
+
 final class AppOnboardingViewModelMapper: AppOnboardingViewModelMapping {
     private let localize: (String) -> String
-    init(localize: @escaping (String) -> String = { Localization.localize($0) })
+
+    init(localize: @escaping (String) -> String = { Localization.localize($0) }) {
+        self.localize = localize
+    }
+
+    func map(shouldRefreshTextPager: Bool,
+             page: Int) -> AppOnboardingViewModel {
+        .init(shouldRefreshTextPager: shouldRefreshTextPager,
+              loginTitle: loginTitle,
+              titleModel: [sellModel, buyModel, useModel, shippingModel, payModel],
+              imageModel: images,
+              currentPage: page)
+    }
+
+    private var loginTitle: NSAttributedString {
+        let accountText = localize("pre_registration_slider_log_in_description")
+        let loginText = localize("pre_registration_slider_log_in_description_link")
+        let text = "\(accountText) \(loginText)"
+        let accountRange = NSString(string: text).range(of: accountText)
+        let loginRange = NSString(string: text).range(of: loginText)
+
+        let attributedString = NSMutableAttributedString(string: text)
+        attributedString.addAttributes([NSAttributedString.Key.font: Stylesheet.font(.body), NSAttributedString.Key.foregroundColor: Stylesheet.color(.grey1)], range: accountRange)
+        attributedString.addAttributes([NSAttributedString.Key.font: Stylesheet.font(.bodyHighlighted), NSAttributedString.Key.foregroundColor: Stylesheet.color(.walla)], range: loginRange)
+        return attributedString
+    }
+
+    private func titleModelFor(page: Int) -> AppOnboardingTextPagerViewModel {
+        let models = [sellModel, buyModel, useModel, shippingModel, payModel]
+        return models[page]
+    }
+
+    private var sellModel: AppOnboardingTextPagerViewModel {
+        .init(title: localize("pre_registration_slider_sell_message_title"),
+              subtitle: localize("pre_registration_slider_sell_message_description"))
+    }
+
+    private var buyModel: AppOnboardingTextPagerViewModel {
+        .init(title: localize("pre_registration_slider_buy_message_title"),
+              subtitle: localize("pre_registration_slider_buy_message_description"))
+    }
+
+    private var useModel: AppOnboardingTextPagerViewModel {
+        .init(title: localize("pre_registration_slider_use_your_way_message_title"),
+              subtitle: localize("pre_registration_slider_use_your_way_message_description"))
+    }
+
+    private var shippingModel: AppOnboardingTextPagerViewModel {
+        .init(title: localize("pre_registration_slider_shipping_message_title"),
+              subtitle: localize("pre_registration_slider_shipping_message_description"))
+    }
+
+    private var payModel: AppOnboardingTextPagerViewModel {
+        .init(title: localize("pre_registration_slider_pay_safely_message_title"),
+              subtitle: localize("pre_registration_slider_pay_safely_message_description"))
+    }
+
+    private var images: [AppOnboardingImagePagerViewModel] {
+        [sellImage, buyImage, useYourWayImage, shippingImage, paySafeImage].map { AppOnboardingImagePagerViewModel(image: $0) }
+    }
+
+    private var sellImage: WallaAsset {
+        .preRegistrationSell
+    }
+
+    private var buyImage: WallaAsset {
+        .preRegistrationBuy
+    }
+
+    private var useYourWayImage: WallaAsset {
+        .preRegistrationUseYourWay
+    }
+
+    private var shippingImage: WallaAsset {
+        .preRegistrationShipping
+    }
+
+    private var paySafeImage: WallaAsset {
+        .preRegistratrionPaySafe
+    }
 }
+
 """#
