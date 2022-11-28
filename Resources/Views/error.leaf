@@ -10,7 +10,7 @@
   <meta name="twitter:card" content="summary" />
   <meta property="twitter:image" content="https://swift-ast-explorer.com/images/ogp_image.png" />
   <meta property="og:image" content="https://swift-ast-explorer.com/images/ogp_image.png" />
-  <meta property="og:title" content="Swift AST Explorer">
+  <meta property="og:title" content="Wallapop Localizier">
   <meta property="og:description"
     content="Visualize Swift AST and select nodes within the editor, a great way to learn about the structure of Swift syntax trees." />
   <meta name="description"

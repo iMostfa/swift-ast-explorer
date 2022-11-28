@@ -39,7 +39,7 @@
   <meta name="msapplication-config" content="/favicons/browserconfig.xml">
   <meta name="theme-color" content="#ffffff">
 
-  <title>Swift AST Explorer</title>
+  <title>Wallapop Localizer</title>
 
   <script defer data-domain="swift-ast-explorer.com" src="https://plausible.io/js/plausible.js"></script>
 </head>

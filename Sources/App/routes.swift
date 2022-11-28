@@ -9,7 +9,7 @@ func routes(_ app: Application) throws {
     }
     func index(request req: Request) -> EventLoopFuture<View> {
         return req.view.render("index", [
-            "title": "Swift AST Explorer",
+            "title": "Wallapop Localizer",
             "defaultSampleCode": defaultSampleCode,
             "defaultSampleCode2": defaultSampleCode,
             "swiftVersion": swiftVersion,
@@ -47,7 +47,7 @@ func routes(_ app: Application) throws {
 
                 return req.view.render(
                     "index", [
-                        "title": "Swift AST Explorer",
+                        "title": "Wallapop Localizer",
                         "defaultSampleCode": content,
                         "swiftVersion": swiftVersion,
                         "defaultSampleCode2": content,
