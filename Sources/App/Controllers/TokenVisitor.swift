@@ -186,7 +186,7 @@ final class TokenVisitor: SyntaxRewriter {
                 list.remove(at: list.count - 5)
                 list.remove(at: list.count - 4)
                 
-                list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters("LocalizationKey.\(result)"))</span>")
+                list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters(".\(result)"))</span>")
             }
         } else if isDetectingLocalizaionDecl, token.text == "String" {
                 list.append("<span class='token \(kind)' data-tooltip-title='Token' data-tooltip-content='\(token.tokenKind)'>\(escapeHtmlSpecialCharacters("LocalizationKey"))</span>")
